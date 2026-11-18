@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop All Products · AK Home Interior</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Reusing styles from main page */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --purple: #7B2CBF; --purple-light: #9D4EDD; --purple-dark: #3C096C; --purple-soft: #F3E8FF;
+      --orange: #F48C06; --orange-light: #FFA53E; --orange-soft: #FFF5E8;
+      --white: #FFFFFF; --off-white: #FCFAFF; --dark: #1A1A1A; --gray-text: #5E5673; --gray-light: #EAE6F0;
+      --shadow-sm: 0 4px 12px rgba(123, 44, 191, 0.05); --shadow-md: 0 10px 30px rgba(123, 44, 191, 0.1); --shadow-lg: 0 20px 40px rgba(123, 44, 191, 0.15);
+      --radius-sm: 12px; --radius-md: 20px; --radius-lg: 32px;
+    }
+    body { font-family: 'Outfit', sans-serif; background-color: var(--off-white); color: var(--dark); line-height: 1.6; overflow-x: hidden; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 36px; border-radius: 60px; font-weight: 600; font-size: 1rem; transition: all 0.3s; cursor: pointer; border: none; text-decoration: none; }
+    .btn-primary { background: var(--purple); color: var(--white); box-shadow: 0 8px 20px rgba(123, 44, 191, 0.3); }
+    .btn-primary:hover { background: var(--purple-light); transform: translateY(-4px); }
+    .btn-orange { background: var(--orange); color: var(--white); box-shadow: 0 8px 20px rgba(244, 140, 6, 0.3); }
+    .btn-orange:hover { background: var(--orange-light); transform: translateY(-4px); }
+    
+    .top-bar { background: var(--purple-dark); color: var(--white); text-align: center; padding: 8px 0; font-size: 0.85rem; font-weight: 500; }
+    .header { padding: 18px 0; background: var(--white); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm); }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo-icon { background: var(--purple); color: var(--white); width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 800; position: relative; }
+    .logo-icon::after { content: "💡"; position: absolute; font-size: 1rem; bottom: -5px; right: -5px; background: var(--orange); width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .logo-text { font-weight: 800; font-size: 1.4rem; color: var(--dark); line-height: 1.1; }
+    .logo-text span { display: block; font-size: 0.75rem; font-weight: 600; color: var(--orange); letter-spacing: 1px; text-transform: uppercase; }
+    .cart-btn { position: relative; background: var(--purple-soft); color: var(--purple); width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.3s; }
+    .cart-btn:hover { background: var(--purple); color: var(--white); }
+    .cart-count { position: absolute; top: -2px; right: -2px; background: var(--orange); color: white; font-size: 0.75rem; font-weight: 800; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--white); }
+
+    .page-header { text-align: center; padding: 60px 0 40px; background: linear-gradient(135deg, var(--white) 0%, var(--purple-soft) 100%); }
+    .page-header h1 { font-size: 3rem; font-weight: 800; color: var(--purple-dark); margin-bottom: 10px; }
+    .page-header p { color: var(--gray-text); font-size: 1.1rem; }
+
+    .products-section { padding: 60px 0 100px; }
+    .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .product-card { background: var(--white); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); transition: all 0.3s ease; border: 1px solid var(--gray-light); display: flex; flex-direction: column; }
+    .product-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); border-color: var(--purple-soft); }
+    .product-img-wrapper { position: relative; width: 100%; padding-top: 100%; background: var(--white); overflow: hidden; }
+    .product-img-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+    .product-card:hover .product-img-wrapper img { transform: scale(1.08); }
+    .product-badge { position: absolute; top: 12px; left: 12px; background: var(--purple); color: white; font-size: 0.7rem; font-weight: 700; padding: 5px 12px; border-radius: 40px; z-index: 2; text-transform: uppercase; }
+    .product-badge.hot { background: var(--orange); }
+    .product-info { padding: 20px; display: flex; flex-direction: column; flex: 1; }
+    .product-info h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; color: var(--dark); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .product-info p { color: var(--gray-text); font-size: 0.85rem; margin-bottom: 16px; flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .product-price-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .product-price { font-weight: 800; color: var(--purple); font-size: 1.3rem; }
+    .product-price small { font-weight: 500; color: #A09CAB; font-size: 0.8rem; text-decoration: line-through; margin-left: 6px; }
+    .product-actions { display: flex; gap: 8px; }
+    .product-actions .btn { padding: 10px; font-size: 0.85rem; border-radius: 10px; flex: 1; }
+    .btn-add-cart { background: var(--purple-soft); color: var(--purple); font-weight: 700; }
+    .btn-add-cart:hover { background: var(--purple); color: var(--white); }
+    .btn-buy-now { background: var(--orange); color: var(--white); font-weight: 700; }
+    .btn-buy-now:hover { background: var(--orange-light); }
+
+    /* Cart Drawer & Toast */
+    .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 200; opacity: 0; visibility: hidden; transition: 0.3s; }
+    .cart-overlay.open { opacity: 1; visibility: visible; }
+    .cart-drawer { position: fixed; top: 0; right: 0; width: 100%; max-width: 440px; height: 100vh; background: var(--white); z-index: 201; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.4s; }
+    .cart-drawer.open { transform: translateX(0); }
+    .cart-header { padding: 24px; border-bottom: 1px solid var(--gray-light); display: flex; align-items: center; justify-content: space-between; }
+    .cart-header h3 { font-size: 1.4rem; font-weight: 800; }
+    .cart-close { background: var(--off-white); border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; }
+    .cart-items { flex: 1; overflow-y: auto; padding: 24px; }
+    .cart-empty { text-align: center; padding: 60px 20px; color: var(--gray-text); }
+    .cart-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--gray-light); }
+    .cart-item-img { width: 80px; height: 80px; border-radius: 12px; object-fit: cover; background: var(--off-white); }
+    .cart-item-info { flex: 1; }
+    .cart-item-info h4 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .cart-item-info .price { font-size: 1rem; color: var(--purple); font-weight: 700; }
+    .cart-item-qty { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+    .qty-btn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--gray-light); background: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .qty-btn:hover { background: var(--purple); color: var(--white); }
+    .cart-item-qty span { font-weight: 700; min-width: 20px; text-align: center; }
+    .cart-item-remove { background: none; border: none; color: #ccc; cursor: pointer; font-size: 1.1rem; }
+    .cart-item-remove:hover { color: var(--orange); }
+    .cart-footer { padding: 24px; border-top: 1px solid var(--gray-light); background: var(--off-white); }
+    .cart-total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 1.2rem; font-weight: 700; }
+    .cart-total-row strong { font-size: 1.6rem; color: var(--purple); }
+    .cart-footer .btn { width: 100%; padding: 18px; }
+    .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--dark); color: white; padding: 16px 32px; border-radius: 60px; font-weight: 500; box-shadow: var(--shadow-md); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 1000; display: flex; align-items: center; gap: 12px; }
+    .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    .toast i { color: var(--orange); }
+
+    @media (max-width: 1200px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 768px) { 
+      .product-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .page-header h1 { font-size: 2.2rem; }
+      .product-actions { flex-direction: column; }
+    }
+    @media (max-width: 480px) { .product-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar"><i class="fas fa-truck-fast"></i> Free Delivery on orders over Rs. 10,000</div>
+
+  <header class="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">AK</div>
+        <div class="logo-text">AK Home Interior<span>Lights & Fans</span></div>
+      </a>
+      <div style="display: flex; gap: 15px; align-items: center;">
+        <a href="index.html" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;"><i class="fas fa-home"></i> Home</a>
+        <button class="cart-btn" id="cartToggle">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-header">
+    <div class="container">
+      <h1>All Products</h1>
+      <p>Browse our complete collection of premium lights and fans</p>
+    </div>
+  </div>
+
+  <section class="products-section">
+    <div class="container">
+      <div class="product-grid">
+        
+        <!-- Product 1 -->
+        <div class="product-card">
+          <div class="product-img-wrapper">
+            <img src="./Elegant Floral Sconce with Warm Glow.png" alt="Floral Pattern Wall Light">
+            <span class="product-badge hot">Sale</span>
+          </div>
+          <div class="product-info">
+            <h3>Floral Pattern Wall Light</h3>
+            <p>Elegant fabric shade with intricate floral design.</p>
+            <div class="product-price-row"><span class="product-price">Rs. 2,499 <small>Rs. 3,499</small></span></div>
+            <div class="product-actions">
+              <button class="btn btn-add-cart" onclick="addToCart(1)"><i class="fas fa-cart-plus"></i> Add</button>
+              <button class="btn btn-buy-now" onclick="buyNow(1, 'Floral Pattern Wall Light', 2499)"><i class="fab fa-whatsapp"></i> Buy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="product-card">
+          <div class="product-img-wrapper">
+            <img src="./2.png" alt="Modern Rose Wall Lamp">
+            <span class="product-badge">New</span>
+          </div>
+          <div class="product-info">
+            <h3>Modern Rose Wall Lamp</h3>
+            <p>Contemporary rose-patterned shade with a sleek black base.</p>
+            <div class="product-price-row"><span class="product-price">Rs. 2,799 <small>Rs. 3,999</small></span></div>
+            <div class="product-actions">
+              <button class="btn btn-add-cart" onclick="addToCart(2)"><i class="fas fa-cart-plus"></i> Add</button>
+              <button class="btn btn-buy-now" onclick="buyNow(2, 'Modern Rose Wall Lamp', 2799)"><i class="fab fa-whatsapp"></i> Buy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 3 -->
+        <div class="product-card">
+          <div class="product-img-wrapper">
+            <img src="./Warm Crystal Star Wall Sconce.png" alt="Geometric Star Wall Light">
+            <span class="product-badge hot">Hot</span>
+          </div>
+          <div class="product-info">
+            <h3>Geometric Star Wall Light</h3>
+            <p>Stunning geometric star pattern that casts beautiful shadows.</p>
+            <div class="product-price-row"><span class="product-price">Rs. 2,999 <small>Rs. 4,199</small></span></div>
+            <div class="product-actions">
+              <button class="btn btn-add-cart" onclick="addToCart(3)"><i class="fas fa-cart-plus"></i> Add</button>
+              <button class="btn btn-buy-now" onclick="buyNow(3, 'Geometric Star Wall Light', 2999)"><i class="fab fa-whatsapp"></i> Buy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 4 -->
+        <div class="product-card">
+          <div class="product-img-wrapper">
+            <img src="./3.png" alt="Luxury Crystal Star Chandelier">
+            <span class="product-badge">Premium</span>
+          </div>
+          <div class="product-info">
+            <h3>Luxury Crystal Star Chandelier</h3>
+            <p>Exquisite crystal star design with gold finish.</p>
+            <div class="product-price-row"><span class="product-price">Rs. 8,999 <small>Rs. 12,999</small></span></div>
+            <div class="product-actions">
+              <button class="btn btn-add-cart" onclick="addToCart(4)"><i class="fas fa-cart-plus"></i> Add</button>
+              <button class="btn btn-buy-now" onclick="buyNow(4, 'Luxury Crystal Star Chandelier', 8999)"><i class="fab fa-whatsapp"></i> Buy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 5 -->
+        <div class="product-card">
+          <div class="product-img-wrapper">
+            <img src="./Luxury Gold Crystal Wall Sconce.png" alt="Gold Cylinder Wall Sconce">
+          </div>
+          <div class="product-info">
+            <h3>Gold Cylinder Wall Sconce</h3>
+            <p>Tall gold wall sconce with a clear glass shade.</p>
+            <div class="product-price-row"><span class="product-price">Rs. 4,599 <small>Rs. 5,999</small></span></div>
+            <div class="product-actions">
+              <button class="btn btn-add-cart" onclick="addToCart(5)"><i class="fas fa-cart-plus"></i> Add</button>
+              <button class="btn btn-buy-now" onclick="buyNow(5, 'Gold Cylinder Wall Sconce', 4599)"><i class="fab fa-whatsapp"></i> Buy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 6 -->
+        <div class="product-card">
+          <div class="product-img-wrapper">
+            <img src="./Rose-Gold Heart Crystal Wall Sconce.png" alt="Crystal Heart Wall Light">
+            <span class="product-badge hot">Sale</span>
+          </div>
+          <div class="product-info">
+            <h3>Crystal Heart Wall Light</h3>
+            <p>Romantic heart-shaped crystal wall light with rose gold finish.</p>
+            <div class="product-price-row"><span class="product-price">Rs. 3,299 <small>Rs. 4,499</small></span></div>
+            <div class="product-actions">
+              <button class="btn btn-add-cart" onclick="addToCart(6)"><i class="fas fa-cart-plus"></i> Add</button>
+              <button class="btn btn-buy-now" onclick="buyNow(6, 'Crystal Heart Wall Light', 3299)"><i class="fab fa-whatsapp"></i> Buy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 7 -->
+        <div class="product-card">
+          <div class="product-img-wrapper">
+            <img src="./Rose-Gold Crystal Double Wall Sconce.png" alt="Double Crystal Wall Sconce">
+          </div>
+          <div class="product-info">
+            <h3>Double Crystal Wall Sconce</h3>
+            <p>Twin crystal wall light with butterfly accents.</p>
+            <div class="product-price-row"><span class="product-price">Rs. 5,499 <small>Rs. 6,999</small></span></div>
+            <div class="product-actions">
+              <button class="btn btn-add-cart" onclick="addToCart(7)"><i class="fas fa-cart-plus"></i> Add</button>
+              <button class="btn btn-buy-now" onclick="buyNow(7, 'Double Crystal Wall Sconce', 5499)"><i class="fab fa-whatsapp"></i> Buy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 8 -->
+        <div class="product-card">
+          <div class="product-img-wrapper">
+            <img src="./Warm Victorian Wall Lantern Glow.png" alt="Vintage Amber Wall Light">
+          </div>
+          <div class="product-info">
+            <h3>Vintage Amber Wall Light</h3>
+            <p>Classic amber glass wall light with intricate gold detailing.</p>
+            <div class="product-price-row"><span class="product-price">Rs. 3,899 <small>Rs. 4,999</small></span></div>
+            <div class="product-actions">
+              <button class="btn btn-add-cart" onclick="addToCart(8)"><i class="fas fa-cart-plus"></i> Add</button>
+              <button class="btn btn-buy-now" onclick="buyNow(8, 'Vintage Amber Wall Light', 3899)"><i class="fab fa-whatsapp"></i> Buy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 9 -->
+        <div class="product-card">
+          <div class="product-img-wrapper">
+            <img src="./Lustrous Gold and Crystal Chandelier.png" alt="Grand Crystal Ceiling Chandelier">
+          </div>
+          <div class="product-info">
+            <h3>Grand Crystal Ceiling Chandelier</h3>
+            <p>Luxurious tiered crystal chandelier for large rooms.</p>
+            <div class="product-price-row"><span class="product-price">Rs. 24,999 <small>Rs. 29,999</small></span></div>
+            <div class="product-actions">
+              <button class="btn btn-add-cart" onclick="addToCart(9)"><i class="fas fa-cart-plus"></i> Add</button>
+              <button class="btn btn-buy-now" onclick="buyNow(9, 'Grand Crystal Ceiling Chandelier', 24999)"><i class="fab fa-whatsapp"></i> Buy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 10 -->
+        <div class="product-card">
+          <div class="product-img-wrapper">
+            <img src="./Modern Wall Sconce with Warm Fanlight.png" alt="Modern Minimalist Pendant">
+          </div>
+          <div class="product-info">
+            <h3>Modern Minimalist Pendant</h3>
+            <p>Sleek black metal pendant light for modern kitchens.</p>
+            <div class="product-price-row"><span class="product-price">Rs. 1,899 <small>Rs. 2,599</small></span></div>
+            <div class="product-actions">
+              <button class="btn btn-add-cart" onclick="addToCart(10)"><i class="fas fa-cart-plus"></i> Add</button>
+              <button class="btn btn-buy-now" onclick="buyNow(10, 'Modern Minimalist Pendant', 1899)"><i class="fab fa-whatsapp"></i> Buy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 11 -->
+        <div class="product-card">
+          <div class="product-img-wrapper">
+            <img src="./Warm Geometric Sconce with Greenery.png" alt="Ceiling Fan - White">
+            <span class="product-badge hot">Popular</span>
+          </div>
+          <div class="product-info">
+            <h3>Ceiling Fan - White</h3>
+            <p>High-speed silent motor ceiling fan in pure white.</p>
+            <div class="product-price-row"><span class="product-price">Rs. 5,999 <small>Rs. 7,499</small></span></div>
+            <div class="product-actions">
+              <button class="btn btn-add-cart" onclick="addToCart(11)"><i class="fas fa-cart-plus"></i> Add</button>
+              <button class="btn btn-buy-now" onclick="buyNow(11, 'Ceiling Fan - White', 5999)"><i class="fab fa-whatsapp"></i> Buy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 12 -->
+        <div class="product-card">
+          <div class="product-img-wrapper">
+            <img src="./Rose-Gold Damask Wall Sconce.png" alt="Table Lamp - USB">
+          </div>
+          <div class="product-info">
+            <h3>Table Lamp - USB</h3>
+            <p>Warm glow touch control table lamp with USB port.</p>
+            <div class="product-price-row"><span class="product-price">Rs. 1,899 <small>Rs. 2,299</small></span></div>
+            <div class="product-actions">
+              <button class="btn btn-add-cart" onclick="addToCart(12)"><i class="fas fa-cart-plus"></i> Add</button>
+              <button class="btn btn-buy-now" onclick="buyNow(12, 'Table Lamp - USB', 1899)"><i class="fab fa-whatsapp"></i> Buy</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CART DRAWER -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3><i class="fas fa-shopping-bag" style="color:var(--purple);margin-right:8px;"></i> Your Cart</h3>
+      <button class="cart-close" id="cartClose"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer">
+      <div class="cart-total-row"><span>Total</span><strong id="cartTotal">Rs. 0</strong></div>
+      <button class="btn btn-orange" id="checkoutBtn"><i class="fab fa-whatsapp"></i> Checkout on WhatsApp</button>
+    </div>
+  </div>
+  <div id="toast" class="toast"><i class="fas fa-check-circle"></i> <span>Added to cart</span></div>
+
+  <script>
+    const WHATSAPP_NUMBER = '923001234567'; // <-- CHANGE THIS
+    let cart = [];
+    
+    // All products data for the Shop page
+   const productData = {
+  1:  { name: 'Floral Pattern Wall Light',        price: 2499,  image: './Elegant Floral Sconce with Warm Glow.png' },
+  2:  { name: 'Modern Rose Wall Lamp',            price: 2799,  image: './2.png' },
+  3:  { name: 'Geometric Star Wall Light',        price: 2999,  image: './Warm Crystal Star Wall Sconce.png' },
+  4:  { name: 'Luxury Crystal Star Chandelier',   price: 8999,  image: './3.png' },
+  5:  { name: 'Gold Cylinder Wall Sconce',        price: 4599,  image: './Luxury Gold Crystal Wall Sconce.png' },
+  6:  { name: 'Crystal Heart Wall Light',         price: 3299,  image: './Rose-Gold Heart Crystal Wall Sconce.png' },
+  7:  { name: 'Double Crystal Wall Sconce',       price: 5499,  image: './Rose-Gold Crystal Double Wall Sconce.png' },
+  8:  { name: 'Vintage Amber Wall Light',         price: 3899,  image: './Warm Victorian Wall Lantern Glow.png' },
+  9:  { name: 'Grand Crystal Ceiling Chandelier', price: 24999, image: './Lustrous Gold and Crystal Chandelier.png' },
+  10: { name: 'Modern Minimalist Pendant',        price: 1899,  image: './Modern Wall Sconce with Warm Fanlight.png' },
+  11: { name: 'Ceiling Fan - White',              price: 5999,  image: './Warm Geometric Sconce with Greenery.png' },
+  12: { name: 'Table Lamp - USB',                 price: 1899,  image: './Rose-Gold Damask Wall Sconce.png' }
+};
+    const cartCount = document.getElementById('cartCount');
+    const cartDrawer = document.getElementById('cartDrawer');
+    const cartOverlay = document.getElementById('cartOverlay');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    const cartToggle = document.getElementById('cartToggle');
+    const cartClose = document.getElementById('cartClose');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const toast = document.getElementById('toast');
+
+    function formatPrice(amount) { return 'Rs. ' + amount.toLocaleString('en-PK'); }
+    function showToast(message) { toast.querySelector('span').textContent = message; toast.classList.add('show'); clearTimeout(toast._timeout); toast._timeout = setTimeout(() => toast.classList.remove('show'), 2500); }
+    function getCartTotal() { return cart.reduce((sum, item) => sum + (productData[item.id] ? productData[item.id].price * item.qty : 0), 0); }
+    function getCartQtyCount() { return cart.reduce((sum, item) => sum + item.qty, 0); }
+
+    function renderCart() {
+      const count = getCartQtyCount();
+      cartCount.textContent = count;
+      cartCount.style.display = count > 0 ? 'flex' : 'none';
+
+      if (cart.length === 0) {
+        cartItems.innerHTML = `<div class="cart-empty"><i class="fas fa-shopping-bag"></i><p>Your cart is empty.</p></div>`;
+        cartTotal.textContent = formatPrice(0);
+        return;
+      }
+
+      cartItems.innerHTML = cart.map(item => {
+        const p = productData[item.id];
+        if (!p) return '';
+        return `
+          <div class="cart-item" data-id="${item.id}">
+            <img class="cart-item-img" src="${p.image}" alt="${p.name}">
+            <div class="cart-item-info">
+              <h4>${p.name}</h4>
+              <div class="price">${formatPrice(p.price)}</div>
+              <div class="cart-item-qty">
+                <button class="qty-btn" onclick="decreaseQty(${item.id})">−</button>
+                <span>${item.qty}</span>
+                <button class="qty-btn" onclick="increaseQty(${item.id})">+</button>
+              </div>
+            </div>
+            <button class="cart-item-remove" onclick="removeFromCart(${item.id})"><i class="fas fa-trash-alt"></i></button>
+          </div>`;
+      }).join('');
+      cartTotal.textContent = formatPrice(getCartTotal());
+    }
+
+    window.addToCart = function(id) {
+      const existing = cart.find(item => item.id === id);
+      if (existing) existing.qty += 1; else cart.push({ id, qty: 1 });
+      renderCart(); showToast(`${productData[id].name} added to cart`);
+    };
+    window.increaseQty = function(id) { const item = cart.find(i => i.id === id); if (item) { item.qty += 1; renderCart(); } };
+    window.decreaseQty = function(id) { const item = cart.find(i => i.id === id); if (!item) return; item.qty -= 1; if (item.qty <= 0) cart = cart.filter(i => i.id !== id); renderCart(); };
+    window.removeFromCart = function(id) { cart = cart.filter(i => i.id !== id); renderCart(); showToast('Item removed'); };
+    window.buyNow = function(id, name, price) {
+      const message = `Assalam o Alaikum AK Home Interior! 👋\n\nI want to order: *${name}*\nPrice: ${formatPrice(price)}\n\nPlease confirm availability.`;
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+      showToast(`Opening WhatsApp for ${name}`);
+    };
+
+    function openCart() { cartDrawer.classList.add('open'); cartOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeCart() { cartDrawer.classList.remove('open'); cartOverlay.classList.remove('open'); document.body.style.overflow = ''; }
+    function checkoutOnWhatsApp() {
+      if (cart.length === 0) { showToast('Your cart is empty.'); return; }
+      let lines = ['*Assalam o Alaikum AK Home Interior!* 👋', '', 'I would like to order:', ''];
+      let total = 0;
+      cart.forEach(item => {
+        const p = productData[item.id]; const subtotal = p.price * item.qty; total += subtotal;
+        lines.push(`• ${p.name} × ${item.qty} = ${formatPrice(subtotal)}`);
+      });
+      lines.push('', `*Total: ${formatPrice(total)}*`, '', 'Please confirm availability.');
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank');
+      showToast('Opening WhatsApp…');
+    }
+
+    cartToggle.addEventListener('click', openCart);
+    cartClose.addEventListener('click', closeCart);
+    cartOverlay.addEventListener('click', closeCart);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCart(); });
+    checkoutBtn.addEventListener('click', checkoutOnWhatsApp);
+    renderCart();
+  </script>
+</body>
+</html>
